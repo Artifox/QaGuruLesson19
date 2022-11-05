@@ -1,10 +1,10 @@
 package tests;
 
 import com.codeborne.selenide.WebDriverRunner;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.Cookie;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Cookie;
 
 import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.text;
@@ -14,18 +14,15 @@ import static helpers.CustomApiListener.withCustomTemplates;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 
-@Tag("DemoWebShop")
 public class DemoWebShopTest extends TestBase {
 
 
     @Test
-    @DisplayName("Регистрация пользователя  API+UI")
+    @DisplayName("Sign in user")
     void userRegistrationTest() {
 
-        step("Открытие минимального контента", () ->
-                open("/Themes/DefaultClean/Content/images/logo.png"));
-
-        step("Вызов метода register", () -> {
+        open("/Themes/DefaultClean/Content/images/logo.png");
+        step("[API] Register a new user", () -> {
             given()
                     .filter(withCustomTemplates())
                     .contentType("application/x-www-form-urlencoded")
@@ -48,19 +45,19 @@ public class DemoWebShopTest extends TestBase {
                     .statusCode(302);
         });
 
-        step("Открытие формы авторизации", () ->
+        step("Open login form", () ->
                 open("/login"));
 
-        step("Авторизация под новым пользователем", () -> {
+        step("Authorization with created user", () -> {
             $("#Email").setValue(testData.email);
             $("#Password").setValue(testData.passwordRandom).pressEnter();
         });
 
-        step("Проверка авторизации под новым пользователем", () ->{
+        step("Verify that new user is authorized", () -> {
             $(".account").shouldHave(text(testData.email));
         });
 
-        step("Выход из учетной записи", () -> {
+        step("Log out", () -> {
             $(".ico-logout").click();
 
         });
@@ -68,10 +65,10 @@ public class DemoWebShopTest extends TestBase {
 
 
     @Test
-    @DisplayName("Авторизация и редактирование профился API+UI")
+    @DisplayName("Editing profile")
     void editingProfile() {
 
-        step("Авторизация через API", () -> {
+        step("[API] Authorization", () -> {
             testData.authCookieValue = given()
                     .filter(withCustomTemplates())
                     .contentType("application/x-www-form-urlencoded; charset=UTF-8")
@@ -85,24 +82,22 @@ public class DemoWebShopTest extends TestBase {
                     .cookie(testData.authCookieName);
         });
 
-        step("set cookie в браузере", () -> {
+        step("Set cookie", () -> {
             open("");
             Cookie authCookie = new Cookie(testData.authCookieName, testData.authCookieValue);
             WebDriverRunner.getWebDriver().manage().addCookie(authCookie);
         });
 
-        step("Изменение имени пользователя и пола", () -> {
+        step("Changing user data", () -> {
             open("/customer/info");
             $("[for=gender-female]").click();
-            $("#FirstName").setValue("Alexandr");
+            $("#FirstName").setValue("ChackNorris");
             $("[value=Save]").click();
         });
 
-        step("Проверка имени и пола", () -> {
+        step("Verify name and", () -> {
             $("[for=gender-female]").shouldHave(text("Female"));
-            $("#FirstName").shouldHave((attribute("value", "Alexandr")));
+            $("#FirstName").shouldHave((attribute("value", "ChackNorris")));
         });
-
-
     }
 }
