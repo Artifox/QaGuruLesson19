@@ -15,25 +15,18 @@ import static org.openqa.selenium.logging.LogType.BROWSER;
 
 public class AllureAttachments {
 
-    @Attachment(value = "{attachName}", type = "image/png")
-    public static byte[] screenshotAs(String attachName) {
+    @Attachment(value = "Console Log", type = "text/plain")
+    public static String addConsoleLog() {
+        return String.join("\n", Selenide.getWebDriverLogs(BROWSER));
+    }
+
+    @Attachment(value = "Screenshot", type = "image/png")
+    public static byte[] addScreenshot() {
         return ((TakesScreenshot) getWebDriver()).getScreenshotAs(OutputType.BYTES);
     }
 
-    @Attachment(value = "{attachName}", type = "text/plain")
-    public static String attachAsText(String attachName, String message) {
-        return message;
-    }
-
-    public static void browserConsoleLogs() {
-        attachAsText(
-                "Browser console logs",
-                String.join("\n", Selenide.getWebDriverLogs(BROWSER))
-        );
-    }
-
-    @Attachment(value = "Page source", type = "text/plain")
-    public static byte[] pageSource() {
+    @Attachment(value = "Page Source", type = "text/plain")
+    public static byte[] addPageSource() {
         return getWebDriver().getPageSource().getBytes(StandardCharsets.UTF_8);
     }
 
@@ -44,9 +37,8 @@ public class AllureAttachments {
                 + "' type='video/mp4'></video></body></html>";
     }
 
-    public static URL getVideoUrl() {
+    private static URL getVideoUrl() {
         String videoUrl = "https://selenoid.autotests.cloud/video/" + getSessionId() + ".mp4";
-
         try {
             return new URL(videoUrl);
         } catch (MalformedURLException e) {
@@ -55,7 +47,7 @@ public class AllureAttachments {
         return null;
     }
 
-    public static String getSessionId() {
+    private static String getSessionId() {
         return ((RemoteWebDriver) getWebDriver()).getSessionId().toString();
     }
 }
