@@ -5,12 +5,16 @@ import config.CredentialsConfig;
 import org.aeonbits.owner.ConfigFactory;
 
 public class TestData {
-    CredentialsConfig config = ConfigFactory.create(CredentialsConfig.class);
+    static CredentialsConfig config = ConfigFactory.create(CredentialsConfig.class);
+    String login = config.login();
     String password = config.password();
-    String email = config.email();
+    String remoteUrlSelenoid = config.remoteUrlSelenoid();
 
+    String authCookieName  = "NOPCOMMERCE.AUTH";
+    String authCookieValue;
     Faker faker = new Faker();
     String firstName = faker.funnyName().name(),
             lastName = faker.name().lastName(),
-            userEmail = faker.internet().safeEmailAddress();
+            email = faker.internet().safeEmailAddress(),
+            passwordRandom = faker.internet().password();
 }

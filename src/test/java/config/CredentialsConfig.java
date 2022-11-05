@@ -2,8 +2,9 @@ package config;
 
 import org.aeonbits.owner.Config;
 
-@Config.Sources("classpath:config/authConfig.properties")
-public interface CredentialsConfig extends Config {
-    String email();
+@Config.Sources("classpath:credential.properties")
+public interface CredentialsConfig  extends Config{
+    String login();
     String password();
+    String remoteUrlSelenoid();
 }
